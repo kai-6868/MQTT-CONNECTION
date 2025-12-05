@@ -4,6 +4,8 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include "time.h"
+#include <DHTesp.h>
+
 
 // ----- Thông tin thiết bị -----
 const char* device_id = "esp32_devkit_01";
