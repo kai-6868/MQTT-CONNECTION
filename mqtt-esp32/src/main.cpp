@@ -7,6 +7,7 @@
 #include <DHTesp.h>
 #include <LiquidCrystal_I2C.h>
 #include "SharpGP2Y10.h"
+#include <DFRobotDFPlayerMini.h>
 
 // ===== Cảm biến =====
 const int buttonPin = 0;
@@ -43,6 +44,10 @@ const long gmtOffset_sec = 7 * 3600;
 // ===== MQTT =====
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
+
+// ===== Hàm khai báo trước =====
+void playTrack(uint8_t track);
+unsigned long waitTrackFinished();
 
 // ======================
 //      CALLBACK MQTT
@@ -146,7 +151,7 @@ void loop()
   float dustDensity = dustSensor.getDustDensity()* 1000;
 
   // ===== Hiển thị LCD =====
-  // lcd.clear();
+  lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("T:");
   lcd.print(temperature, 1);
@@ -196,5 +201,5 @@ void loop()
     Serial.println("MQTT publish FAIL");
   }
 
-  delay(10000); // gửi mỗi 10 giây
+  delay(3000); // gửi mỗi 10 giây
 }
