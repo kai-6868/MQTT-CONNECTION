@@ -10,6 +10,7 @@
 #include "SensorManager.h"
 #include "LcdDisplay.h"
 #include "SharpGP2Y10.h"
+#include <DFRobotDFPlayerMini.h>
 
 // ===== Cảm biến =====
 
@@ -48,6 +49,10 @@ WiFiClientSecure espClient;
 PubSubClient client(espClient);
 WifiMqttManager wifiMqttManager(
     ssid, password, mqtt_server, mqtt_port, mqtt_user, mqtt_pass, device_id, topic_control, &espClient, &client);
+
+// ===== Hàm khai báo trước =====
+void playTrack(uint8_t track);
+unsigned long waitTrackFinished();
 
 // ======================
 //      CALLBACK MQTT
@@ -141,6 +146,70 @@ void loop()
     wifiMqttManager.reconnectMqtt();
   client.loop();
 
+<<<<<<< HEAD
   publishSensorData();
   delay(10000); // gửi mỗi 10 giây
+=======
+  // ===== Đọc cảm biến =====
+  TempAndHumidity data = dht.getTempAndHumidity();
+  float temperature = data.temperature;
+  float humidity = data.humidity;
+
+  int lightValue = analogRead(lightSensorPin);
+  int rainValue = analogRead(rainSensorPin);
+  float dustDensity = dustSensor.getDustDensity()* 1000;
+
+  // ===== Hiển thị LCD =====
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("T:");
+  lcd.print(temperature, 1);
+  lcd.print(" H:");
+  lcd.print(humidity, 1);
+
+  lcd.setCursor(0, 1);
+  lcd.print("D:");
+  lcd.print(dustDensity, 1);
+  lcd.print(" L:");
+  lcd.print(lightValue);
+  Serial.print("Dust Density: ");
+  Serial.print(dustDensity);
+  Serial.println(" ug/m3");
+  delay(1000);
+  // ===== JSON =====
+  DynamicJsonDocument doc(512);
+
+  doc["device_id"] = device_id;
+  doc["timestamp"] = time(nullptr);
+
+  doc["wifi_name"] = WiFi.SSID();
+  doc["wifi_rssi"] = WiFi.RSSI();
+
+  doc["temp"] = temperature;
+  doc["hum"] = humidity;
+
+  doc["dust"] = dustDensity;
+  doc["light"] = lightValue;
+  doc["rain"] = rainValue;
+
+  // ===== Serialize & Publish =====
+  char buffer[512];
+  size_t len = serializeJson(doc, buffer);
+
+  bool success = client.publish(topic_data.c_str(), buffer, len);
+  if(success)
+  {
+    Serial.println("===== MQTT PUBLISH SUCCESS =====");
+    Serial.print("Topic: "); Serial.println(topic_data);
+    Serial.print("Timestamp: "); Serial.println(time(nullptr));
+    Serial.println("Payload sent:"); serializeJsonPretty(doc, Serial);
+    Serial.println("================================");
+  }
+  else
+  {
+    Serial.println("MQTT publish FAIL");
+  }
+
+  delay(3000); // gửi mỗi 10 giây
+>>>>>>> 89b475d8291e507aca4f5a62b60f78f39f00744e
 }
