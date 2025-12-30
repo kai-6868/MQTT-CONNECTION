@@ -4,7 +4,7 @@
 #define DEVICE_ID "esp32_devkit_06"
 
 // real/fake device mode
-#define USE_FAKE_DEVICE 1   // 1 = fake, 0 = sensor thật
+#define USE_FAKE_DEVICE 0   // 1 = fake, 0 = sensor thật
 
 // ===== WiFi =====
 #define WIFI_SSID "Nguyen Thanh Huyen"

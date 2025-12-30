@@ -22,8 +22,10 @@ static bool lcdVisible = true;
 static unsigned long lastToggle = 0;
 
 // timing
-#define ALERT_DURATION 5000   // 5s
-#define ALERT_REPEAT 3
+#define ALERT_SHOW_TIME   1000   // hiển thị 5s
+#define ALERT_HIDE_TIME   1000  // tắt 3s
+#define ALERT_REPEAT      3
+
 
 // =====================
 void lcd_init()
@@ -85,29 +87,36 @@ void lcd_loop()
 
   unsigned long now = millis();
 
-  if (now - lastToggle >= ALERT_DURATION)
+  // ===== ĐANG HIỂN THỊ =====
+  if (lcdVisible && (now - lastToggle >= ALERT_SHOW_TIME))
   {
+    lcd.clear();              // tắt LCD
+    lcdVisible = false;
     lastToggle = now;
+    blinkCount++;             // đếm số lần hiển thị xong
+  }
 
-    if (lcdVisible)
+  // ===== ĐANG TẮT =====
+  else if (!lcdVisible && (now - lastToggle >= ALERT_HIDE_TIME))
+  {
+    // nếu chưa đủ số lần → hiển lại
+    if (blinkCount < ALERT_REPEAT)
     {
-      lcdVisible = false;
-      blinkCount++;
-    }
-    else
-    {
+      lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print(alertLine1);
       lcd.setCursor(0, 1);
       lcd.print(alertLine2);
-      lcdVisible = true;
-    }
 
-    // đủ 3 lần → quay về sensor
-    if (blinkCount >= ALERT_REPEAT)
+      lcdVisible = true;
+      lastToggle = now;
+    }
+    else
     {
+      // đủ số lần → quay về sensor
       currentMode = MODE_SENSOR;
       lcd.clear();
     }
   }
 }
+

@@ -11,36 +11,6 @@ PubSubClient mqttClient(espClient);
 
 static String topicControl = "ecosense/devices/" DEVICE_ID "/controlz";
 
-// void mqtt_callback(char* topic, byte* payload, unsigned int length)
-// {
-//   String msg;
-//   for (uint32_t i = 0; i < length; i++) msg += (char)payload[i];
-
-//   DynamicJsonDocument doc(256);
-//   if (deserializeJson(doc, msg)) return;
-//     // Kiểm tra và xử lý lệnh điều khiển
-//   if (doc.containsKey("led"))
-//     // Điều khiển LED
-//   {
-//     const char* state = doc["led"]["state"];
-//     digitalWrite(LED_BUILTIN, strcmp(state, "ON") == 0);
-//   };
-
-//     if (doc.containsKey("audio"))
-//     // Điều khiển Audio
-//     {
-//     if (doc["audio"].containsKey("volume"))
-//         audio_set_volume(doc["audio"]["volume"]);
-
-//     if (doc["audio"].containsKey("play"))
-//         audio_play(doc["audio"]["play"]);
-
-//     if (doc["audio"]["stop"] == true)
-//         audio_stop();
-//     }
-
-
-// }
 void mqtt_callback(char* topic, byte* payload, unsigned int length)
 { 
   Serial.print("[MQTT] Message arrived on topic: ");
@@ -76,9 +46,6 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length)
 
     if (a.containsKey("play"))
       audio_play(a["play"].as<int>());
-
-    if (a["stop"] | false)
-      audio_stop();
   }
 
   // ===== LCD =====

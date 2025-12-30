@@ -3,9 +3,9 @@
     "state": "ON"  // "ON" hoặc "OFF"
   },
   "audio": {
-    "play": 4,  //số file mp3
     "volume": 20,  //0-30
-    "stop": false
+    "play": 4,  //số file mp3
+    
   },
   "lcd": {
     "line1": "HELLO",
