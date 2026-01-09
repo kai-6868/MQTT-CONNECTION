@@ -1,14 +1,20 @@
 #pragma once
 
 // ===== Device =====
-#define DEVICE_ID "esp32_devkit_06"
+#define DEVICE_ID "esp32_devkit_02"
+
+//=====  Location =====
+#define LOCATION_LAT 20.980623
+#define LOCATION_LON 105.842007
 
 // real/fake device mode
 #define USE_FAKE_DEVICE 0   // 1 = fake, 0 = sensor thật
 
 // ===== WiFi =====
-#define WIFI_SSID "Nguyen Thanh Huyen"
-#define WIFI_PASS "Huyen1978"
+// #define WIFI_SSID "Nguyen Thanh Huyen"
+// #define WIFI_PASS "Huyen1978"
+#define WIFI_SSID "P910"
+#define WIFI_PASS "0915244240"
 
 // ===== MQTT =====
 #define MQTT_SERVER "connection.ducbinh203.tech"

@@ -9,7 +9,7 @@
 WiFiClientSecure espClient;
 PubSubClient mqttClient(espClient);
 
-static String topicControl = "ecosense/devices/" DEVICE_ID "/controlz";
+static String topicControl = "ecosense/devices/" DEVICE_ID "/control";
 
 void mqtt_callback(char* topic, byte* payload, unsigned int length)
 { 
