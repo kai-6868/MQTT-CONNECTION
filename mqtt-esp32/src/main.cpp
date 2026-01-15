@@ -56,8 +56,11 @@ void loop()
 
   mqtt_publish(topicData.c_str(), payload, len);
 
-  delay(10000);
+  delay(60000); // 1 phút
 }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> cba0e27 (cập nhật logic sinh dữ liệu thời tiết theo thời gian thực)

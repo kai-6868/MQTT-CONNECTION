@@ -3,7 +3,7 @@
 #include <WiFi.h>
 #include <time.h>
 
-size_t build_payload(char* buffer, size_t size, const SensorData& data)
+size_t build_payload(char *buffer, size_t size, const SensorData &data)
 {
   DynamicJsonDocument doc(512);
 
