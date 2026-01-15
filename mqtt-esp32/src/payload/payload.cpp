@@ -9,6 +9,11 @@ size_t build_payload(char* buffer, size_t size, const SensorData& data)
 
   doc["device_id"] = DEVICE_ID;
   doc["timestamp"] = time(nullptr);
+
+  JsonObject location = doc.createNestedObject("location");
+  location["lat"] = LOCATION_LAT;
+  location["lon"] = LOCATION_LON;
+
   doc["wifi_name"] = WiFi.SSID();
   doc["wifi_rssi"] = WiFi.RSSI();
 

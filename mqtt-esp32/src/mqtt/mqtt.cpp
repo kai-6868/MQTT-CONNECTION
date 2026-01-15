@@ -5,11 +5,12 @@
 #include <Arduino.h>
 #include "../audio/audio.h"
 #include "../lcd/lcd.h"
+#include "../servo/servo.h"
 
 WiFiClientSecure espClient;
 PubSubClient mqttClient(espClient);
 
-static String topicControl = "ecosense/devices/" DEVICE_ID "/controlz";
+static String topicControl = "ecosense/devices/" DEVICE_ID "/control";
 
 void mqtt_callback(char* topic, byte* payload, unsigned int length)
 { 
@@ -59,14 +60,12 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length)
   }
 
   // ===== SERVO =====
-//   if (doc.containsKey("servo")) {
-//     JsonObject s = doc["servo"];
+  if (doc.containsKey("servo")) {
+    JsonObject s = doc["servo"];
 
-//     if (s.containsKey("angle")) {
-//       int angle = constrain(s["angle"].as<int>(), 0, 180);
-//       servo.write(angle);
-//     }
-//   }
+    if (s.containsKey("angle"))
+      servo_run(s["angle"].as<int>());
+  }
 }
 
 

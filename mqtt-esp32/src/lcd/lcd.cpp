@@ -68,55 +68,33 @@ void lcd_show_alert(const char* line1, const char* line2)
   alertLine1 = line1;
   alertLine2 = line2;
 
+  // Hiển thị cảnh báo theo kiểu blocking: hiện -> delay -> tắt -> delay
+  // Lặp `ALERT_REPEAT` lần rồi trở về chế độ sensor.
   currentMode = MODE_ALERT;
-  blinkCount = 0;
-  lcdVisible = true;
-  lastToggle = millis();
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(alertLine1);
-  lcd.setCursor(0, 1);
-  lcd.print(alertLine2);
+  for (uint8_t i = 0; i < ALERT_REPEAT; i++)
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(alertLine1);
+    lcd.setCursor(0, 1);
+    lcd.print(alertLine2);
+
+    delay(ALERT_SHOW_TIME);
+
+    lcd.clear();
+    delay(ALERT_HIDE_TIME);
+  }
+
+  // Sau khi nhấp nháy xong, quay về chế độ hiển thị cảm biến
+  currentMode = MODE_SENSOR;
 }
 
 // =====================
 void lcd_loop()
 {
-  if (currentMode != MODE_ALERT) return;
-
-  unsigned long now = millis();
-
-  // ===== ĐANG HIỂN THỊ =====
-  if (lcdVisible && (now - lastToggle >= ALERT_SHOW_TIME))
-  {
-    lcd.clear();              // tắt LCD
-    lcdVisible = false;
-    lastToggle = now;
-    blinkCount++;             // đếm số lần hiển thị xong
-  }
-
-  // ===== ĐANG TẮT =====
-  else if (!lcdVisible && (now - lastToggle >= ALERT_HIDE_TIME))
-  {
-    // nếu chưa đủ số lần → hiển lại
-    if (blinkCount < ALERT_REPEAT)
-    {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(alertLine1);
-      lcd.setCursor(0, 1);
-      lcd.print(alertLine2);
-
-      lcdVisible = true;
-      lastToggle = now;
-    }
-    else
-    {
-      // đủ số lần → quay về sensor
-      currentMode = MODE_SENSOR;
-      lcd.clear();
-    }
-  }
+  // Không dùng non-blocking blinking nữa. Việc hiển thị cảnh báo
+  // đã được thực hiện đồng bộ trong `lcd_show_alert()` bằng `delay()`.
+  (void)0;
 }
 

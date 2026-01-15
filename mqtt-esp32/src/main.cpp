@@ -7,6 +7,7 @@
 #include "fake/fake_device.h"
 #include "audio/audio.h"
 #include "lcd/lcd.h"
+#include "servo/servo.h"
 
 static String topicData = "ecosense/devices/" DEVICE_ID "/data";
 
@@ -27,6 +28,7 @@ void setup()
   wifi_init();
   configTime(GMT_OFFSET_SEC, 0, "pool.ntp.org");
   audio_init();
+  servo_init();
   lcd_init();
   mqtt_init();
 

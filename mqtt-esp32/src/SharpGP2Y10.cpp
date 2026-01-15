@@ -32,7 +32,7 @@ void SharpGP2Y10::calc() {
     digitalWrite(ledPin, HIGH); //turn off LED
     delayMicroseconds(SharpGP2Y10_SLEEPINGTIME);
 
-    calcVoltage = volMeasured * (vccVol / 1024);   //calc real Voltage
+    calcVoltage = volMeasured * (vccVol / 4096);   //calc real Voltage
 
     // Linear equation taken from http://www.howmuchsnow.com/arduino/airquality/
     // Chris Nafis (c) 2012
