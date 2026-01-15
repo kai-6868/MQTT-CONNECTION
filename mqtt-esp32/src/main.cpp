@@ -1,4 +1,17 @@
 #include <Arduino.h>
+<<<<<<< HEAD
+#include "config/config.h"
+#include "wifi/wifi.h"
+#include "sensor/sensor.h"
+#include "mqtt/mqtt.h"
+#include "payload/payload.h"
+#include "fake/fake_device.h"
+#include "audio/audio.h"
+#include "lcd/lcd.h"
+#include "servo/servo.h"
+
+static String topicData = "ecosense/devices/" DEVICE_ID "/data";
+=======
 #include <ArduinoJson.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
@@ -108,48 +121,56 @@ void reconnect_mqtt()
     }
   }
 }
+>>>>>>> main
 
 void setup()
 {
   Serial.begin(115200);
-  delay(1000);
 
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(buttonPin, INPUT_PULLUP);
 
-  dht.setup(dhtPin, DHTesp::DHT11);
+  // fake or real data device
+  #if USE_FAKE_DEVICE
+    Serial.println("[FAKE DEVICE] Data generated");
+  #else
+    Serial.println("[SENSOR] Real data read");
+  #endif
 
-  lcd.init();
-  lcd.backlight();
 
-  setup_wifi();
+  wifi_init();
+  configTime(GMT_OFFSET_SEC, 0, "pool.ntp.org");
+  audio_init();
+  servo_init();
+  lcd_init();
+  mqtt_init();
 
-  configTime(gmtOffset_sec, 0, "pool.ntp.org");
-
-  espClient.setInsecure(); // development mode
-
-  client.setServer(mqtt_server, mqtt_port);
-  client.setCallback(callback);
-
-  client.setBufferSize(1024);
-
-  reconnect_mqtt();
+#if USE_FAKE_DEVICE
+  fake_device_init();
+#else
+  sensor_init();
+#endif
 }
 
 void loop()
 {
-  if (!client.connected()) reconnect_mqtt();
-  client.loop();
+  mqtt_loop();
+  lcd_loop();
 
-  // ===== Đọc cảm biến =====
-  TempAndHumidity data = dht.getTempAndHumidity();
-  float temperature = data.temperature;
-  float humidity = data.humidity;
+  #if USE_FAKE_DEVICE
+    SensorData data = fake_device_generate();
+  #else
+    SensorData data = sensor_read();
+  #endif
+  lcd_show_sensor(data);
 
-  int lightValue = analogRead(lightSensorPin);
-  int rainValue = analogRead(rainSensorPin);
-  float dustDensity = dustSensor.getDustDensity()* 1000;
+  char payload[512];
+  size_t len = build_payload(payload, sizeof(payload), data);
 
+<<<<<<< HEAD
+  mqtt_publish(topicData.c_str(), payload, len);
+
+  delay(60000); // 1 phút
+=======
   // ===== Hiển thị LCD =====
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -202,4 +223,11 @@ void loop()
   }
 
   delay(3000); // gửi mỗi 10 giây
+>>>>>>> main
 }
+
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> cba0e27 (cập nhật logic sinh dữ liệu thời tiết theo thời gian thực)
